@@ -28,6 +28,12 @@ pipeline {
                 sh 'dotnet publish -c Release -o out'
             }
         }
+        
+        stage('Dockerize') {
+            steps {
+                sh 'docker build -t my-app .'
+            }
+        }
 
        
     }
