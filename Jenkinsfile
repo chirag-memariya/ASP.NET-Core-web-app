@@ -29,26 +29,6 @@ pipeline {
             }
         }
 
-        stage('Dockerize') {
-            steps {
-                script {
-
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-token') {
-                        def image = docker.build('memariyachirag126/mywebapp:1.0', '.')
-                        image.push()
-                    }
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-token') {
-                        def image = docker.image('memariyachirag126/mywebapp:1.0')
-                        docker.image('memariyachirag126/mywebapp:1.0').run('--rm -it -p 8000:80')
-                    }
-                }
-            }
-        }
+       
     }
 }
