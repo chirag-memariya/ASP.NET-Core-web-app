@@ -32,6 +32,13 @@ pipeline {
         stage('Dockerize') {
             steps {
                 script {
+
+                    withDockerRegistry(credentialsId: 'dockerhub-token', toolName: 'docker', url: 'https://registry.hub.docker.com/') {
+                        // some block
+                        def image = docker.build('memariyachirag126/mywebapp:1.0', '.')
+                        image.push()
+                    }
+
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-token') {
                         def image = docker.build('memariyachirag126/mywebapp:1.0', '.')
                         image.push()
@@ -43,7 +50,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-token') {
+                    withDockerRegistry(credentialsId: 'dockerhub-token', toolName: 'docker', url: 'https://registry.hub.docker.com/') {
                         def image = docker.image('memariyachirag126/mywebapp:1.0')
                         docker.image('memariyachirag126/mywebapp:1.0').run('--rm -it -p 8000:80')
                     }
