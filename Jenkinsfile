@@ -29,9 +29,14 @@ pipeline {
             }
         }
         
-        stage('Dockerize') {
+        stage('Push to Docker Registry') {
             steps {
-                sh 'docker build -t my-app .'
+                withCredentials([usernamePassword(credentialsId: 'docker-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                    sh 'docker build memariyachirag126/mywebapp:1.0 .'
+                    // sh 'docker tag my-app my-docker-registry/my-app'
+                    sh 'docker push memariyachirag126/mywebapp:1.0'
+                }
             }
         }
 
