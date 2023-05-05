@@ -1,15 +1,3 @@
-
-//         stage('Push to Docker Registry') {
-//             steps {
-//                 withCredentials([usernamePassword(credentialsId: 'docker-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-//                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-//                     sh 'docker tag my-app my-docker-registry/my-app'
-//                     sh 'docker push my-docker-registry/my-app'
-//                 }
-//             }
-//         }
-
-
 pipeline {
     agent {
         docker {
@@ -34,9 +22,32 @@ pipeline {
                 sh 'dotnet test'
             }
         }
+
+        stage('Publish') {
+            steps {
+                sh 'dotnet publish -c Release -o out'
+            }
+        }
+
         stage('Dockerize') {
             steps {
-                sh 'docker build -t my-app .'
+                script {
+
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-token') {
+                        def image = docker.build('memariyachirag126/mywebapp:1.0', '.')
+                        image.push()
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-token') {
+                        def image = docker.image('memariyachirag126/mywebapp:1.0')
+                        docker.image('memariyachirag126/mywebapp:1.0').run('--rm -it -p 8000:80')
+                    }
+                }
             }
         }
     }
