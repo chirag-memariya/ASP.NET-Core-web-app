@@ -1,10 +1,10 @@
 pipeline {
-    agent {
-        docker {
+    agent any
+       /* docker {
             image 'mcr.microsoft.com/dotnet/sdk:7.0'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+        } */
+    
     environment {
         HOME = '/tmp'
     } 
