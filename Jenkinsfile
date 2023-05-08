@@ -29,6 +29,7 @@ pipeline {
             }
         }
         
+        /*
         stage('Push to Docker Registry') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -39,6 +40,7 @@ pipeline {
                 }
             }
         }
+        */
 
        
     }
